@@ -3,7 +3,7 @@ import httpx
 import os
 from urllib.parse import quote_plus
 
-mcp = FastMCP("feedly")
+mcp = FastMCP("feedly", host="0.0.0.0", port=8080)
 
 FEEDLY_BASE = "https://api.feedly.com/v3"
 TOKEN = os.getenv("FEEDLY_TOKEN")
@@ -68,4 +68,4 @@ def autocomplete_entities(prefix: str, count: int = 10) -> dict:
 
 if __name__ == "__main__":
     # Run the MCP server over HTTP rather than the default stdio transport
-    mcp.run(transport="streamable-http", host="0.0.0.0", port=8080)
+    mcp.run(transport="streamable-http")
