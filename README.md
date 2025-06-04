@@ -1,6 +1,6 @@
 # MCP Server for Feedly API
 
-This repository contains a minimal [FastMCP](https://github.com/jlowin/fastmcp) server that exposes selected Feedly API endpoints as MCP tools. The server provides the following tools:
+This repository contains a minimal [python-sdk](https://github.com/modelcontextprotocol/python-sdk) server that exposes selected Feedly API endpoints as MCP tools. The server provides the following tools:
 
 - `feedly.search`
 - `feedly.collect`
@@ -16,7 +16,7 @@ These tools make it possible for MCP-aware language models to search and retriev
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install fastmcp httpx python-dotenv
+pip install mcp httpx python-dotenv
 ```
 
 2. Export your Feedly authentication token so the server can call the Feedly API:
