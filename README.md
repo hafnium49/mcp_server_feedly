@@ -27,7 +27,7 @@ export FEEDLY_TOKEN=YOUR_TOKEN_HERE
 
 ## Running the server
 
-Run the server on port `8080`:
+Run the server over HTTP on port `8080`:
 
 ```bash
 python server.py
