@@ -149,6 +149,22 @@ async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('Feedly MCP server running on stdio');
+  
+  // Keep the process alive
+  process.stdin.resume();
+  
+  // Handle graceful shutdown
+  process.on('SIGINT', async () => {
+    console.error('Shutting down Feedly MCP server...');
+    await server.close();
+    process.exit(0);
+  });
+  
+  process.on('SIGTERM', async () => {
+    console.error('Shutting down Feedly MCP server...');
+    await server.close();
+    process.exit(0);
+  });
 }
 
 main().catch((error) => {
