@@ -48,17 +48,13 @@ create or update `claude_desktop_config.json` with an entry like:
 {
   "mcpServers": {
     "feedly": {
-      "transport": "http",
-      "enabled": true,
-      "url": "http://localhost:8081/mcp",
       "command": "npx",
       "args": [
         "ts-node",
         "/path/to/mcp_server_feedly/server.ts"
       ],
       "env": {
-        "FEEDLY_TOKEN": "YOUR_TOKEN_HERE",
-        "PORT": "8081"
+        "FEEDLY_TOKEN": "YOUR_TOKEN_HERE"
       }
     }
   }
