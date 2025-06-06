@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "feedly": {
+      "url": "http://localhost:8080/mcp",
+      "command": "npx",
+      "args": [
+        "ts-node",
+        "<path>/server.ts"
+      ],
+      "env": {
+        "FEEDLY_TOKEN": "YOUR_TOKEN_HERE"
+      }
+    }
+  }
+}
