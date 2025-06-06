@@ -1,6 +1,8 @@
 {
   "mcpServers": {
     "feedly": {
+      "transport": "http",
+      "enabled": true,
       "url": "http://localhost:8080/mcp",
       "command": "npx",
       "args": [

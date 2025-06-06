@@ -42,6 +42,8 @@ create or update `claude_desktop_config.json` with an entry like:
 {
   "mcpServers": {
     "feedly": {
+      "transport": "http",
+      "enabled": true,
       "url": "http://localhost:8080/mcp",
       "command": "npx",
       "args": [
@@ -59,3 +61,15 @@ create or update `claude_desktop_config.json` with an entry like:
 `url` tells Claude Desktop where to reach the server. `command` and `args` allow the app to start it automatically. Replace the path with the location of `server.ts` on your system and set `FEEDLY_TOKEN` to your Feedly token.
 
 You can copy `claude_desktop_config.example.json` from this repository as a starting point.
+
+## Running tests
+
+Install the Python dependencies and run the test suite:
+
+```bash
+pip install -r requirements.txt
+FEEDLY_TOKEN=xxxx pytest -q
+```
+
+These tests compile the TypeScript server and verify that the MCP discovery endpoint responds correctly.
+=======
