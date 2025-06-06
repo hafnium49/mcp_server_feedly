@@ -20,7 +20,7 @@ const server = new McpServer({
 
 // Search API - POST /search/contents
 server.tool(
-  'feedly.search',
+  'feedly_search',
   'Search for articles in Feedly using advanced query syntax',
   { 
     layers: z.array(z.object({
@@ -78,7 +78,7 @@ server.tool(
 
 // Collect Articles API - GET /streams/contents
 server.tool(
-  'feedly.collect',
+  'feedly_collect',
   'Collect articles from a Feedly stream (AI Feed, Folder, or Board)',
   { 
     streamId: z.string().describe('The stream ID to collect from (e.g., user/xxx/category/yyy)'),
@@ -112,7 +112,7 @@ server.tool(
 
 // Entity Lookup API - GET /entities/{entityId}
 server.tool(
-  'feedly.entity_lookup',
+  'feedly_entity_lookup',
   'Look up details about a specific Feedly entity',
   { entity_id: z.string().describe('The entity ID to look up (will be URL encoded)') },
   async ({ entity_id }) => {
@@ -126,7 +126,7 @@ server.tool(
 
 // Autocomplete Entities API - GET /search/entities
 server.tool(
-  'feedly.autocomplete',
+  'feedly_autocomplete',
   'Get entity and AI model suggestions based on a query',
   { 
     query: z.string().describe('The keyword to match against entities and AI models'),
