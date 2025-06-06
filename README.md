@@ -50,7 +50,7 @@ create or update `claude_desktop_config.json` with an entry like:
     "feedly": {
       "transport": "http",
       "enabled": true,
-      "url": "http://localhost:8080/mcp",
+      "url": "http://localhost:8081/mcp",
       "command": "npx",
       "args": [
         "ts-node",
