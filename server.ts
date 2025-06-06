@@ -23,53 +23,33 @@ server.tool(
   'feedly_search',
   'Search for articles in Feedly using advanced query syntax',
   { 
-    layers: z.array(z.object({
-      parts: z.array(z.object({
-        aliases: z.array(z.string()).optional(),
-        id: z.string(),
-        label: z.string(),
-        type: z.string()
-      })),
-      type: z.string(),
-      salience: z.string()
-    })).optional().describe('Query layers for advanced search'),
-    source: z.object({
-      items: z.array(z.object({
-        id: z.string(),
-        label: z.string().optional(),
-        type: z.string(),
-        tier: z.string().optional(),
-        description: z.string().optional()
-      }))
-    }).optional().describe('Source streams to search in'),
+    query: z.string().describe('Search query string'),
+    streamId: z.string().optional().describe('Stream ID to search in (e.g., feed/http://example.com/rss)'),
     count: z.number().int().min(1).max(100).default(10).describe('Number of results to return'),
     newerThan: z.number().optional().describe('Timestamp in ms - return only articles newer than this'),
     olderThan: z.number().optional().describe('Timestamp in ms - return only articles older than this'),
     unreadOnly: z.boolean().default(false).describe('Return only unread articles'),
     continuation: z.string().optional().describe('Continuation token for pagination'),
-    includeAiActions: z.boolean().default(true).describe('Include AI actions in results')
+    fields: z.string().optional().describe('Comma-separated list of fields to include')
   },
-  async ({ layers, source, count, newerThan, olderThan, unreadOnly, continuation, includeAiActions }) => {
+  async ({ query, streamId, count, newerThan, olderThan, unreadOnly, continuation, fields }) => {
     const params = new URLSearchParams({ 
+      query: query,
       count: String(count),
-      unreadOnly: String(unreadOnly),
-      includeAiActions: String(includeAiActions)
+      unreadOnly: String(unreadOnly)
     });
     
+    if (streamId) params.set('streamId', streamId);
     if (newerThan) params.set('newerThan', String(newerThan));
     if (olderThan) params.set('olderThan', String(olderThan));
     if (continuation) params.set('continuation', continuation);
+    if (fields) params.set('fields', fields);
     
-    const body: any = {};
-    if (layers) body.layers = layers;
-    if (source) body.source = source;
+    const resp = await fetch(`${FEEDLY_BASE}/search/contents?${params.toString()}`, {
+      method: 'GET',
+      headers: HEADERS
+    });
     
-    const resp = await fetch(`${FEEDLY_BASE}/search/contents?${params.toString()}`,
-      {
-        method: 'POST',
-        headers: { ...HEADERS, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
     if (!resp.ok) throw new Error(await resp.text());
     const data = await resp.json();
     return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] };
