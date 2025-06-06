@@ -114,5 +114,5 @@ app.delete('/mcp', (_req: Request, res: Response) => {
   });
 });
 
-const PORT = 8080;
+const PORT = parseInt(process.env.PORT || '8080', 10);
 app.listen(PORT, '0.0.0.0');

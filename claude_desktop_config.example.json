@@ -3,14 +3,15 @@
     "feedly": {
       "transport": "http",
       "enabled": true,
-      "url": "http://localhost:8080/mcp",
+      "url": "http://localhost:8081/mcp",
       "command": "npx",
       "args": [
         "ts-node",
         "<path>/server.ts"
       ],
       "env": {
-        "FEEDLY_TOKEN": "YOUR_TOKEN_HERE"
+        "FEEDLY_TOKEN": "YOUR_TOKEN_HERE",
+        "PORT": "8081"
       }
     }
   }
