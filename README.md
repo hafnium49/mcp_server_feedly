@@ -34,3 +34,23 @@ python server.py
 ```
 
 The MCP discovery document will be available at `http://localhost:8080/.well-known/mcp/`.
+
+## Using with Claude Desktop
+
+To connect Claude Desktop directly to this server, open **File > Settings > Developer > Edit Config** and
+create or update `claude_desktop_config.json` with an entry like:
+
+```json
+{
+  "mcpServers": {
+    "feedly": {
+      "command": "python",
+      "args": [
+        "/path/to/mcp_server_feedly/server.py"
+      ]
+    }
+  }
+}
+```
+
+Replace the path with the location of `server.py` on your system. Claude Desktop will use this command to start the Feedly MCP server when needed.
