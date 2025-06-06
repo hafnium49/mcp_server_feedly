@@ -9,7 +9,8 @@ from mcp.client.streamable_http import streamablehttp_client
 
 @pytest.fixture(scope="module")
 def server_proc():
-    proc = subprocess.Popen(["python", "server.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    subprocess.run(["npx", "tsc"], check=True)
+    proc = subprocess.Popen(["node", "dist/server.js"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # wait for server to start
     for _ in range(20):
         try:
