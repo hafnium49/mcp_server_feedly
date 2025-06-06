@@ -77,6 +77,3 @@ Install the Python dependencies and run the test suite:
 pip install -r requirements.txt
 FEEDLY_TOKEN=xxxx pytest -q
 ```
-
-These tests compile the TypeScript server and verify that the MCP discovery endpoint responds correctly.
-=======
