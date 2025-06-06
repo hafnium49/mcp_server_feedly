@@ -1,6 +1,6 @@
 # MCP Server for Feedly API
 
-This repository contains a minimal [python-sdk](https://github.com/modelcontextprotocol/python-sdk) server that exposes selected Feedly API endpoints as MCP tools. The server provides the following tools:
+This repository contains a minimal [typescript-sdk](https://github.com/modelcontextprotocol/typescript-sdk) server that exposes selected Feedly API endpoints as MCP tools. The server provides the following tools:
 
 - `feedly.search`
 - `feedly.collect`
@@ -11,12 +11,10 @@ These tools make it possible for MCP-aware language models to search and retriev
 
 ## Setup
 
-1. Create and activate a virtual environment and install dependencies:
+1. Install dependencies using npm:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install mcp httpx python-dotenv
+npm install
 ```
 
 2. Export your Feedly authentication token so the server can call the Feedly API:
@@ -30,7 +28,7 @@ export FEEDLY_TOKEN=YOUR_TOKEN_HERE
 Run the server over HTTP on port `8080`:
 
 ```bash
-python server.py
+npx ts-node server.ts
 ```
 
 The MCP discovery document will be available at `http://localhost:8080/.well-known/mcp/`.
@@ -44,13 +42,14 @@ create or update `claude_desktop_config.json` with an entry like:
 {
   "mcpServers": {
     "feedly": {
-      "command": "python",
+      "command": "npx",
       "args": [
-        "/path/to/mcp_server_feedly/server.py"
+        "ts-node",
+        "/path/to/mcp_server_feedly/server.ts"
       ]
     }
   }
 }
 ```
 
-Replace the path with the location of `server.py` on your system. Claude Desktop will use this command to start the Feedly MCP server when needed.
+Replace the path with the location of `server.ts` on your system. Claude Desktop will use this command to start the Feedly MCP server when needed.
