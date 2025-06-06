@@ -46,10 +46,13 @@ create or update `claude_desktop_config.json` with an entry like:
       "args": [
         "ts-node",
         "/path/to/mcp_server_feedly/server.ts"
-      ]
+      ],
+      "env": {
+        "FEEDLY_TOKEN": "YOUR_TOKEN_HERE"
+      }
     }
   }
 }
 ```
 
-Replace the path with the location of `server.ts` on your system. Claude Desktop will use this command to start the Feedly MCP server when needed.
+Replace the path with the location of `server.ts` on your system and supply your Feedly token in place of `YOUR_TOKEN_HERE`. Claude Desktop will use this command to start the Feedly MCP server when needed.
