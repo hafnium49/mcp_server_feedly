@@ -25,19 +25,13 @@ export FEEDLY_TOKEN=YOUR_TOKEN_HERE
 
 ## Running the server
 
-Run the server over HTTP on port `8080` by default:
+Run the server over **stdio** so there is no network port to configure. Simply start it with:
 
 ```bash
 npx ts-node server.ts
 ```
 
-You can override the port by setting the `PORT` environment variable:
-
-```bash
-PORT=8081 npx ts-node server.ts
-```
-
-The MCP discovery document will be available at `http://localhost:8080/.well-known/mcp/`.
+The process stays alive and communicates with clients via its standard input and output streams.
 
 ## Using with Claude Desktop
 
@@ -61,7 +55,7 @@ create or update `claude_desktop_config.json` with an entry like:
 }
 ```
 
-`url` tells Claude Desktop where to reach the server. `command` and `args` allow the app to start it automatically. Replace the path with the location of `server.ts` on your system and set `FEEDLY_TOKEN` to your Feedly token. Set `PORT` if you want the server to listen on something other than `8080` and update `url` accordingly.
+Claude Desktop communicates with the server over stdio, so there is no URL to configure. `command` and `args` tell the app how to start it. Replace the path with the location of `server.ts` on your system and set `FEEDLY_TOKEN` to your Feedly token.
 
 You can copy `claude_desktop_config.example.json` from this repository as a starting point.
 
