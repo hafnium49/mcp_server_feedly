@@ -21,33 +21,92 @@ const server = new McpServer({
 // Search API - POST /search/contents
 server.tool(
   'feedly_search',
-  'Search for articles in Feedly using advanced query syntax',
+  'Search for articles in Feedly using entity IDs or text queries',
   { 
-    query: z.string().describe('Search query string'),
-    streamId: z.string().optional().describe('Stream ID to search in (e.g., feed/http://example.com/rss)'),
+    query: z.string().optional().describe('Simple text search query'),
+    entities: z.array(z.object({
+      id: z.string().describe('Entity ID from feedly_autocomplete (e.g., nlp/f/entity/wd:15474348)'),
+      label: z.string().describe('Entity label'),
+      aliases: z.array(z.string()).optional().describe('Entity aliases'),
+      type: z.string().optional().describe('Entity type (e.g., topic, org, etc.)'),
+      salience: z.enum(['mention', 'about']).default('mention').describe('How important the entity should be in results')
+    })).optional().describe('Array of entities to search for'),
+    source: z.object({
+      items: z.array(z.object({
+        id: z.string(),
+        label: z.string().optional(),
+        type: z.string(),
+        tier: z.string().optional(),
+        description: z.string().optional()
+      }))
+    }).default({
+      items: [{
+        type: "publicationBucket",
+        id: "discovery:all-topics",
+        tier: "tier3"
+      }]
+    }).describe('Source streams to search in'),
     count: z.number().int().min(1).max(100).default(10).describe('Number of results to return'),
     newerThan: z.number().optional().describe('Timestamp in ms - return only articles newer than this'),
     olderThan: z.number().optional().describe('Timestamp in ms - return only articles older than this'),
     unreadOnly: z.boolean().default(false).describe('Return only unread articles'),
     continuation: z.string().optional().describe('Continuation token for pagination'),
-    fields: z.string().optional().describe('Comma-separated list of fields to include')
+    includeAiActions: z.boolean().default(true).describe('Include AI actions in results')
   },
-  async ({ query, streamId, count, newerThan, olderThan, unreadOnly, continuation, fields }) => {
+  async ({ query, entities, source, count, newerThan, olderThan, unreadOnly, continuation, includeAiActions }) => {
+    // If simple query is provided, use GET method
+    if (query && !entities) {
+      const params = new URLSearchParams({ 
+        query: query,
+        count: String(count),
+        unreadOnly: String(unreadOnly)
+      });
+      
+      if (newerThan) params.set('newerThan', String(newerThan));
+      if (olderThan) params.set('olderThan', String(olderThan));
+      if (continuation) params.set('continuation', continuation);
+      
+      const resp = await fetch(`${FEEDLY_BASE}/search/contents?${params.toString()}`, {
+        method: 'GET',
+        headers: HEADERS
+      });
+      
+      if (!resp.ok) throw new Error(await resp.text());
+      const data = await resp.json();
+      return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] };
+    }
+    
+    // For entity-based search, use POST method with layers
     const params = new URLSearchParams({ 
-      query: query,
       count: String(count),
-      unreadOnly: String(unreadOnly)
+      unreadOnly: String(unreadOnly),
+      includeAiActions: String(includeAiActions)
     });
     
-    if (streamId) params.set('streamId', streamId);
     if (newerThan) params.set('newerThan', String(newerThan));
     if (olderThan) params.set('olderThan', String(olderThan));
     if (continuation) params.set('continuation', continuation);
-    if (fields) params.set('fields', fields);
+    
+    const body: any = { source };
+    
+    // Build layers from entities
+    if (entities && entities.length > 0) {
+      body.layers = entities.map(entity => ({
+        parts: [{
+          id: entity.id,
+          label: entity.label,
+          aliases: entity.aliases || [],
+          type: entity.type || 'entity'
+        }],
+        type: 'matches',
+        salience: entity.salience
+      }));
+    }
     
     const resp = await fetch(`${FEEDLY_BASE}/search/contents?${params.toString()}`, {
-      method: 'GET',
-      headers: HEADERS
+      method: 'POST',
+      headers: { ...HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     });
     
     if (!resp.ok) throw new Error(await resp.text());
