@@ -9,6 +9,34 @@ This repository contains a minimal [typescript-sdk](https://github.com/modelcont
 
 These tools make it possible for MCP-aware language models to search and retrieve articles or NLP entity information from Feedly.
 
+## Complete Feedly Workflow
+
+The tools work together in a typical discovery loop:
+
+1. **Entity discovery** – use `feedly.autocomplete` to find IDs for relevant topics or companies.
+2. **Content search** – call `feedly.search` with those IDs to locate articles and discover stream IDs.
+3. **Stream collection** – pass a stream ID to `feedly.collect` to retrieve full articles from a feed or board.
+4. **Entity details** – fetch additional information about any entity using `feedly.entity_lookup`.
+
+## Key Concepts
+
+- **Entities** – topics, companies, people or technologies identified by Feedly IDs.
+- **Streams** – RSS feeds, user categories or publication buckets.
+- **Salience** – choose `mention` or `about` to control how prominently an entity appears in results.
+- **Sources** – which streams to search in (defaults to all topics).
+
+Common entity ID patterns include `nlp/f/topic/xxxx` for topics and `feed/http://...` for RSS feeds.
+
+## Troubleshooting
+
+- Ensure `FEEDLY_TOKEN` is exported so the server can call the Feedly API.
+- Use `feedly.autocomplete` first to confirm entity IDs.
+- Some streams may not support direct collection; discover stream IDs via `feedly.search`.
+- Use pagination tokens and the `count` parameter to stay within Feedly rate limits.
+
+## Example Workflows
+
+The comments in `server.ts` contain full examples such as tracking AI in healthcare, running company research and analyzing technology trends.
 ## Setup
 
 1. Install dependencies using npm:
